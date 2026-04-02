@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Soenneker.Extensions.ValueTask;
+using Soenneker.Kiota.Util.Abstract;
 using Soenneker.Utils.Directory.Abstract;
 using Soenneker.Utils.File.Abstract;
 using System.Collections.Generic;
@@ -29,19 +30,21 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
     private readonly IGitUtil _gitUtil;
     private readonly IDotnetUtil _dotnetUtil;
     private readonly IProcessUtil _processUtil;
+    private readonly IKiotaUtil _kiotaUtil;
     private readonly IFileUtil _fileUtil;
     private readonly IDirectoryUtil _directoryUtil;
     private readonly IOpenApiMerger _openApiMerger;
     private readonly IOpenApiFixer _openApiFixer;
 
     public FileOperationsUtil(ILogger<FileOperationsUtil> logger, IConfiguration configuration, IGitUtil gitUtil, IDotnetUtil dotnetUtil, IProcessUtil processUtil, 
-        IFileUtil fileUtil, IDirectoryUtil directoryUtil, IOpenApiMerger openApiMerger, IOpenApiFixer openApiFixer)
+        IFileUtil fileUtil, IDirectoryUtil directoryUtil, IOpenApiMerger openApiMerger, IOpenApiFixer openApiFixer, IKiotaUtil kiotaUtil)
     {
         _logger = logger;
         _configuration = configuration;
         _gitUtil = gitUtil;
         _dotnetUtil = dotnetUtil;
         _processUtil = processUtil;
+        _kiotaUtil = kiotaUtil;
         _fileUtil = fileUtil;
         _directoryUtil = directoryUtil;
         _openApiMerger = openApiMerger;
@@ -85,14 +88,13 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
         await _fileUtil.Write(openApiFilePath, mergedOpenApiJson, true, cancellationToken);
         await _openApiFixer.Fix(openApiFilePath, fixedFilePath, cancellationToken);
 
-        await _processUtil.Start("dotnet", null, "tool update --global Microsoft.OpenApi.Kiota", waitForExit: true, cancellationToken: cancellationToken);
+        await _kiotaUtil.EnsureInstalled(cancellationToken);
 
         string srcDirectory = Path.Combine(gitDirectory, "src", Constants.Library);
 
         await DeleteAllExceptCsproj(srcDirectory, cancellationToken);
 
-        await _processUtil.Start("kiota", gitDirectory, $"kiota generate -l CSharp -d \"{fixedFilePath}\" -o src/{Constants.Library} -c TwilioOpenApiClient -n {Constants.Library}",
-            waitForExit: true, cancellationToken: cancellationToken).NoSync();
+        await _kiotaUtil.Generate(fixedFilePath, "TwilioOpenApiClient", Constants.Library, gitDirectory, cancellationToken).NoSync();
 
         await BuildAndPush(gitDirectory, cancellationToken).NoSync();
     }

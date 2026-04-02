@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Soenneker.Kiota.Util.Registrars;
 using Soenneker.Managers.Runners.Registrars;
 using Soenneker.OpenApi.Fixer.Registrars;
 using Soenneker.OpenApi.Merger.Registrars;
@@ -24,7 +25,8 @@ public static class Startup
                 .AddScoped<IFileOperationsUtil, FileOperationsUtil>()
                 .AddRunnersManagerAsScoped()
                 .AddOpenApiMergerAsScoped()
-                .AddOpenApiFixerAsScoped();
+                .AddOpenApiFixerAsScoped()
+                .AddKiotaUtilAsScoped();
 
         return services;
     }
