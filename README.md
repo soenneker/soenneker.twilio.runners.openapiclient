@@ -1,7 +1,7 @@
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/Soenneker.Twilio.Runners.OpenApiClient/build-and-test.yml?style=for-the-badge)](https://github.com/soenneker/Soenneker.Twilio.Runners.OpenApiClient/actions/workflows/build-and-test.yml)
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/Soenneker.Twilio.Runners.OpenApiClient/daily-automatic-update.yml?style=for-the-badge&label=Daily%20Update)](https://github.com/soenneker/Soenneker.Twilio.Runners.OpenApiClient/actions/workflows/daily-automatic-update.yml)
+[![](https://img.shields.io/github/actions/workflow/status/soenneker/Soenneker.Twilio.Runners.OpenApiClient/codeql.yml?style=for-the-badge&label=CodeQL)](https://github.com/soenneker/Soenneker.Twilio.Runners.OpenApiClient/actions/workflows/codeql.yml)
 
 # ![](https://user-images.githubusercontent.com/4441470/224455560-91ed3ee7-f510-4041-a8d2-3fc093025112.png) Soenneker.Twilio.Runners.OpenApiClient
-### A runner that regenerates and updates Soenneker.Twilio.OpenApiClient.
 
-This runner executes a GitHub action that updates another project. It's not meant for consumption.
+Regenerates and publishes `Soenneker.Twilio.OpenApiClient` from Twilio's OpenAPI specifications.
