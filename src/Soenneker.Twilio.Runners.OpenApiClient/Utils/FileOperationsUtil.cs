@@ -22,6 +22,7 @@ using System.Collections.Generic;
 
 namespace Soenneker.Twilio.Runners.OpenApiClient.Utils;
 
+/// <inheritdoc cref="IFileOperationsUtil" />
 public sealed class FileOperationsUtil : IFileOperationsUtil
 {
     private readonly ILogger<FileOperationsUtil> _logger;
